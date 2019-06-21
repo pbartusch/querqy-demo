@@ -1,0 +1,90 @@
+@(currentPage: Page[Hit], currentQuery: String)(implicit flash: play.api.mvc.Flash, messages: Messages)
+
+@****************************************
+* Helper generating navigation links    *
+****************************************@
+@link(newPage: Int) = @{
+    routes.Application.search(currentQuery, newPage)
+}
+
+
+@main {
+    
+    <h1>@Messages("results.list.title", currentPage.total)</h1>
+
+    @flash.get("success").map { message =>
+        <div class="alert-message warning">
+            <strong>Done!</strong> @message
+        </div>
+    }
+
+    <div id="actions">
+        
+        @helper.form(action=routes.Application.search()) {
+            <input type="search" id="searchbox" name="q" value="@currentQuery" placeholder="Search...">
+            <input type="submit" id="searchsubmit" value="Search" class="btn primary">
+        }
+        
+    </div>
+
+    @if( !currentPage.debugDecorateInfo.isEmpty ) {
+        <code>
+            @currentPage.debugDecorateInfo
+        </code>
+    }
+
+    @Option(currentPage.items).filterNot(_.isEmpty).map { hits =>
+        <div class="container">
+
+                @hits.map { hit =>
+                <div class="row" style="width:1200px;">
+                    <div class="col-lg-4" style="float:left"><img src="@hit.imageUrl" /></div>
+                    <div class="col-lg-8" style="float:left;text-align:left;width:800px;margin-left:30px;padding-top:20px;margin-bottom:20px;">
+                        <strong>@hit.title</strong><br/>
+                        @hit.shortDescription
+                    </div>
+
+                </div>
+                }
+        </div>
+
+        <div id="pagination" class="pagination">
+            <ul>
+                @currentPage.prev.map { page =>
+                    <li class="prev">
+                        <a href="@link(page)">&larr; Previous</a>
+                    </li> 
+                }.getOrElse {
+                    <li class="prev disabled">
+                        <a>&larr; Previous</a>
+                    </li>
+                }
+                <li class="current">
+                    <a>Displaying @(currentPage.offset + 1) to @(currentPage.offset + hits.size) of @currentPage.total</a>
+                </li>
+                @currentPage.next.map { page =>
+                    <li class="next">
+                        <a href="@link(page)">Next &rarr;</a>
+                    </li> 
+                }.getOrElse {
+                    <li class="next disabled">
+                        <a>Next &rarr;</a>
+                    </li>
+                }
+            </ul>
+        </div>
+
+    }.getOrElse {
+        
+       @**
+        <div class="well">
+            <em>Nothing to display</em>
+        </div>
+        **@
+    }
+
+<footer>Data by <a href="http://icecat.biz" target="_blank">Open Icecat</a> under the <a href="https://uk.icecat.biz/get_attachment.cgi?3004" target="_blank">OpenContent Licence</a></footer>
+
+}
+
+            
