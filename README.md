@@ -1,5 +1,9 @@
 Simple Scala/Play application that provides a demo frontend on top of a local Solr+querqy (https://github.com/renekrie/querqy) instance. You can also use SMUI (https://github.com/pbartusch/smui) to maintain your querqy rules.
 
+Use
+`sbt`
+`run`
+to build & execute the application.
 
 @todo reference working Solr config
 
